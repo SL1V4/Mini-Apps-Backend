@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name  String?
+  email String  @unique
+  hash  String
+  salt  String
+
+  avatarPath   String?    @map("avatar_path")
+  avatarFileId String?    @map("avatar file id")
+  Playlist     Playlist[]
+}
+
+model Song {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name   String
+  author String?
+  img    String?
+  url    String
+}
+
+model Playlist {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  img  String?
+  name String
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  songIds Int[]
+}
